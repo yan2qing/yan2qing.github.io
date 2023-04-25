@@ -1,0 +1,120 @@
+<html>    
+<meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>
+      Intro to MapView - Create a 2D map | Sample | ArcGIS Maps SDK for
+      JavaScript 4.26
+    </title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      #header {
+      height: 50px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      line-height: 50px;
+    }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.26/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.26/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/layers/TileLayer",
+        "esri/widgets/Legend",
+        "esri/widgets/ScaleBar",
+        "esri/widgets/LayerList",
+        "esri/widgets/Search",
+      ], (
+        Map,
+        MapView,
+        FeatureLayer,
+        TileLayer,
+        Legend,
+        ScaleBar,
+        LayerList,
+        Search,
+        Expand,
+      ) => {
+        var flayer = new FeatureLayer({
+          url: "https://www.geosceneonline.cn/server/rest/services/Hosted/CNh_34Capital_Population11/FeatureServer"
+        });
+        var tiledlayer = new TileLayer({
+          url: "https://www.geosceneonline.cn/server/rest/services/Hosted/铁路1_WTL1/MapServer"
+        });
+
+        const map = new Map({
+          basemap: "topo-vector",
+          layers: [tiledlayer]
+        });
+        map.layers.add(flayer);
+        //map.layers.addMany([tiledlayer,flayer]);
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 4,
+          center: [110, 35] // longitude, latitude
+        });
+
+        var legend = new Legend({
+          view: view,
+          layerInfos: [
+            {
+              layer: flayer,
+              title: "中国人口和铁路状况"
+            }
+          ]
+        });
+        view.ui.add(legend, "bottom-right");
+
+        var scaleBar = new ScaleBar({
+          view: view,
+          style: "ruler",
+          unit: "dual"
+        });
+        view.ui.add(scaleBar, {
+          position: "bottom-left"
+        });
+
+        let layerList = new LayerList({
+          view: view
+        });
+        view.ui.add(layerList, {
+          position: "top-right"
+        });
+
+        const searchWidget = new Search({ view: view });
+        view.ui.add(searchWidget, {
+          position: "top-left",
+          index: 2
+        });
+
+
+
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="header">中国人口和铁路状况</div>
+    <div id="viewDiv"></div>
+  </body>
+</html>
